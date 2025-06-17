@@ -9,7 +9,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: enhanced-super-list
  * Requires at least: 5.9
- * Tested up to: 6.8
+ * Tested up to: 6.4
  * Requires PHP: 7.4
  *
  * @package EnhancedSuperList
@@ -160,10 +160,15 @@ function enhanced_super_list_enqueue_block_editor_assets() {
     error_log('📝 Enhanced Super List: Enqueuing block editor assets');
     
     $script_path = ENHANCED_SUPER_LIST_PLUGIN_URL . 'build/index.js';
-    $style_path = ENHANCED_SUPER_LIST_PLUGIN_URL . 'build/editor.css';
     
     error_log('📄 Script path: ' . $script_path);
-    error_log('🎨 Style path: ' . $style_path);
+    
+    // Check if main build file exists
+    $script_file_path = ENHANCED_SUPER_LIST_PLUGIN_DIR . 'build/index.js';
+    if ( ! file_exists( $script_file_path ) ) {
+        error_log('❌ Enhanced Super List: Main build/index.js file does not exist at: ' . $script_file_path);
+        return;
+    }
     
     wp_enqueue_script(
         'enhanced-super-list-editor',
@@ -173,13 +178,19 @@ function enhanced_super_list_enqueue_block_editor_assets() {
     );
     error_log('✅ Editor script enqueued');
 
-    wp_enqueue_style(
-        'enhanced-super-list-editor',
-        $style_path,
-        array( 'wp-edit-blocks' ),
-        ENHANCED_SUPER_LIST_VERSION
-    );
-    error_log('✅ Editor style enqueued');
+    // Only enqueue editor CSS if it exists
+    $editor_css_path = ENHANCED_SUPER_LIST_PLUGIN_DIR . 'build/editor.css';
+    if ( file_exists( $editor_css_path ) ) {
+        wp_enqueue_style(
+            'enhanced-super-list-editor',
+            ENHANCED_SUPER_LIST_PLUGIN_URL . 'build/editor.css',
+            array( 'wp-edit-blocks' ),
+            ENHANCED_SUPER_LIST_VERSION
+        );
+        error_log('✅ Editor style enqueued');
+    } else {
+        error_log('⚠️ Editor CSS file does not exist, skipping: ' . $editor_css_path);
+    }
     
     error_log('🎉 Enhanced Super List: Block editor assets enqueued');
 }
@@ -191,16 +202,19 @@ add_action( 'enqueue_block_editor_assets', 'enhanced_super_list_enqueue_block_ed
 function enhanced_super_list_enqueue_block_assets() {
     error_log('🌐 Enhanced Super List: Enqueuing frontend assets');
     
-    $frontend_style_path = ENHANCED_SUPER_LIST_PLUGIN_URL . 'build/style.css';
-    error_log('🎨 Frontend style path: ' . $frontend_style_path);
-    
-    wp_enqueue_style(
-        'enhanced-super-list-style',
-        $frontend_style_path,
-        array(),
-        ENHANCED_SUPER_LIST_VERSION
-    );
-    error_log('✅ Frontend style enqueued');
+    // Only enqueue frontend CSS if it exists
+    $frontend_css_path = ENHANCED_SUPER_LIST_PLUGIN_DIR . 'build/style.css';
+    if ( file_exists( $frontend_css_path ) ) {
+        wp_enqueue_style(
+            'enhanced-super-list-style',
+            ENHANCED_SUPER_LIST_PLUGIN_URL . 'build/style.css',
+            array(),
+            ENHANCED_SUPER_LIST_VERSION
+        );
+        error_log('✅ Frontend style enqueued');
+    } else {
+        error_log('⚠️ Frontend CSS file does not exist, skipping: ' . $frontend_css_path);
+    }
     
     error_log('🎉 Enhanced Super List: Frontend assets enqueued');
 }

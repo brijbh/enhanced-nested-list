@@ -1,0 +1,204 @@
+/**
+ * Enhanced Super List Block Styles
+ */
+
+/* Super List Block */
+.wp-block-enhanced-super-list-super-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--list-gap, 16px);
+}
+
+.wp-block-enhanced-super-list-super-list.is-orientation-horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.wp-block-enhanced-super-list-super-list__items {
+    display: contents;
+}
+
+/* Super List Item Block */
+.wp-block-enhanced-super-list-super-list-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--item-spacing, 8px);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.wp-block-enhanced-super-list-super-list-item__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.wp-block-enhanced-super-list-super-list-item__content > * {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.wp-block-enhanced-super-list-super-list-item__content > * + * {
+    margin-top: 0.5em;
+}
+
+/* Custom Markers */
+.wp-block-enhanced-super-list-super-list-item__marker {
+    flex-shrink: 0;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-right: 0.5em;
+}
+
+.wp-block-enhanced-super-list-super-list-item.has-custom-marker::before,
+.wp-block-enhanced-super-list-super-list-item.has-marker-icon::before {
+    display: none;
+}
+
+/* Completed State */
+.wp-block-enhanced-super-list-super-list-item.is-completed {
+    opacity: 0.7;
+}
+
+.wp-block-enhanced-super-list-super-list-item.is-completed .wp-block-enhanced-super-list-super-list-item__content {
+    text-decoration: line-through;
+}
+
+/* Default List Styles */
+.wp-block-enhanced-super-list-super-list:not(.has-custom-marker):not(.has-marker-icon) {
+    list-style-position: outside;
+    padding-left: 1.5em;
+}
+
+.wp-block-enhanced-super-list-super-list:not(.has-custom-marker):not(.has-marker-icon) .wp-block-enhanced-super-list-super-list-item {
+    display: list-item;
+}
+
+/* Block Style Variations */
+
+/* Grid Layout */
+.wp-block-enhanced-super-list-super-list.is-style-grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--list-gap, 16px);
+}
+
+.wp-block-enhanced-super-list-super-list.is-style-grid-layout .wp-block-enhanced-super-list-super-list-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+/* Timeline Style */
+.wp-block-enhanced-super-list-super-list.is-style-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.wp-block-enhanced-super-list-super-list.is-style-timeline::before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #cbd5e1;
+}
+
+.wp-block-enhanced-super-list-super-list.is-style-timeline .wp-block-enhanced-super-list-super-list-item {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 2rem;
+}
+
+.wp-block-enhanced-super-list-super-list.is-style-timeline .wp-block-enhanced-super-list-super-list-item::before {
+    content: '';
+    position: absolute;
+    left: -1.5rem;
+    top: 0.5rem;
+    width: 12px;
+    height: 12px;
+    background: #3b82f6;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #cbd5e1;
+}
+
+/* Checklist Style */
+.wp-block-enhanced-super-list-super-list.is-style-checklist .wp-block-enhanced-super-list-super-list-item {
+    padding-left: 2rem;
+    position: relative;
+}
+
+.wp-block-enhanced-super-list-super-list.is-style-checklist .wp-block-enhanced-super-list-super-list-item::before {
+    content: '☐';
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 1.2em;
+    line-height: 1.2;
+    color: #64748b;
+}
+
+.wp-block-enhanced-super-list-super-list.is-style-checklist .wp-block-enhanced-super-list-super-list-item.is-completed::before {
+    content: '☑';
+    color: #22c55e;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wp-block-enhanced-super-list-super-list.is-orientation-horizontal {
+        flex-direction: column;
+    }
+    
+    .wp-block-enhanced-super-list-super-list.is-style-grid-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .wp-block-enhanced-super-list-super-list.is-style-timeline {
+        padding-left: 1.5rem;
+    }
+    
+    .wp-block-enhanced-super-list-super-list.is-style-timeline .wp-block-enhanced-super-list-super-list-item {
+        padding-left: 1.5rem;
+    }
+}
+
+/* Editor Specific Styles */
+.wp-block-enhanced-super-list-super-list .block-list-appender {
+    margin-top: 1rem;
+}
+
+.wp-block-enhanced-super-list-super-list-item .block-list-appender {
+    margin-top: 0.5rem;
+}
+
+/* Nested Lists */
+.wp-block-enhanced-super-list-super-list .wp-block-enhanced-super-list-super-list {
+    margin-top: 0.5rem;
+    margin-left: 1rem;
+}
+
+/* Animation for completed items */
+.wp-block-enhanced-super-list-super-list-item.is-completed {
+    transition: opacity 0.3s ease;
+}
+
+/* Focus and hover states */
+.wp-block-enhanced-super-list-super-list-item:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 4px;
+}
+
+.wp-block-enhanced-super-list-super-list-item:focus-within {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
