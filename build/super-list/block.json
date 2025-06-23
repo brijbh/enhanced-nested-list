@@ -1,49 +1,71 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "enhanced-super-list/super-list-item",
+  "name": "enhanced-super-list/super-list",
   "version": "1.0.0",
-  "title": "Enhanced Super List Item",
+  "title": "Enhanced Super List",
   "category": "text",
-  "icon": "editor-ul",
-  "description": "A list item that can contain multiple nested blocks.",
+  "icon": "list-view",
+  "description": "Create complex nested lists with multiple block types inside list items.",
   "keywords": [
     "list",
-    "item",
     "nested",
-    "blocks"
+    "blocks",
+    "items"
   ],
   "textdomain": "enhanced-super-list",
-  "parent": [
-    "enhanced-super-list/super-list"
-  ],
   "attributes": {
-    "content": {
-      "type": "string",
-      "source": "html",
-      "selector": ".wp-block-enhanced-super-list-super-list-item__content"
-    },
-    "customMarker": {
-      "type": "string",
-      "default": ""
-    },
-    "markerIcon": {
-      "type": "string",
-      "default": ""
-    },
-    "markerColor": {
-      "type": "string",
-      "default": ""
-    },
-    "completed": {
+    "ordered": {
       "type": "boolean",
       "default": false
+    },
+    "reversed": {
+      "type": "boolean",
+      "default": false
+    },
+    "start": {
+      "type": "number",
+      "default": 1
+    },
+    "type": {
+      "type": "string",
+      "default": "disc",
+      "enum": [
+        "disc",
+        "circle",
+        "square",
+        "decimal",
+        "lower-alpha",
+        "upper-alpha",
+        "lower-roman",
+        "upper-roman",
+        "none"
+      ]
+    },
+    "orientation": {
+      "type": "string",
+      "default": "vertical",
+      "enum": [
+        "vertical",
+        "horizontal"
+      ]
+    },
+    "gap": {
+      "type": "number",
+      "default": 16
+    },
+    "itemSpacing": {
+      "type": "number",
+      "default": 8
     }
   },
   "supports": {
     "html": false,
-    "inserter": false,
-    "reusable": false,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "anchor": true,
     "color": {
       "gradients": true,
       "background": true,
@@ -51,7 +73,8 @@
     },
     "spacing": {
       "margin": true,
-      "padding": true
+      "padding": true,
+      "blockGap": true
     },
     "typography": {
       "fontSize": true,
@@ -61,7 +84,10 @@
       "__experimentalFontStyle": true,
       "__experimentalTextTransform": true,
       "__experimentalTextDecoration": true,
-      "__experimentalLetterSpacing": true
+      "__experimentalLetterSpacing": true,
+      "__experimentalDefaultControls": {
+        "fontSize": true
+      }
     },
     "__experimentalBorder": {
       "color": true,
@@ -70,13 +96,17 @@
       "width": true
     }
   },
+  "providesContext": {
+    "enhanced-super-list/ordered": "ordered",
+    "enhanced-super-list/type": "type",
+    "enhanced-super-list/orientation": "orientation"
+  },
   "usesContext": [
-    "enhanced-super-list/ordered",
-    "enhanced-super-list/type",
-    "enhanced-super-list/orientation"
+    "postId",
+    "postType"
   ],
   "selectors": {
-    "root": ".wp-block-enhanced-super-list-super-list-item"
+    "root": ".wp-block-enhanced-super-list-super-list"
   },
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",

@@ -19,11 +19,6 @@ import {
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 
-/**
- * Internal dependencies
- */
-import metadata from './block.json';
-
 const TEMPLATE = [
     [ 'core/paragraph', { placeholder: __( 'Add content...', 'enhanced-super-list' ) } ]
 ];
@@ -31,7 +26,12 @@ const TEMPLATE = [
 /**
  * Edit component for the Super List Item block.
  */
-function Edit( { attributes, setAttributes, clientId, context } ) {
+export default function Edit( { attributes, setAttributes, clientId, context } ) {
+    console.log('🔧 Super List Item Edit component started');
+    console.log('📊 Item Edit attributes:', attributes);
+    console.log('🆔 Item Client ID:', clientId);
+    console.log('🔗 Item Context:', context);
+
     const {
         customMarker,
         markerIcon,
@@ -39,11 +39,24 @@ function Edit( { attributes, setAttributes, clientId, context } ) {
         completed
     } = attributes;
 
+    console.log('🔧 Item Edit - extracted attributes:', {
+        customMarker,
+        markerIcon,
+        markerColor,
+        completed
+    });
+
     const {
         'enhanced-super-list/ordered': ordered,
         'enhanced-super-list/type': listType,
         'enhanced-super-list/orientation': orientation
     } = context;
+
+    console.log('🔗 Item Edit - context values:', {
+        ordered,
+        listType,
+        orientation
+    });
 
     const { insertBlock, removeBlock } = useDispatch( 'core/block-editor' );
     const { getBlockRootClientId, getBlockIndex, getBlocks } = useSelect( 'core/block-editor' );
@@ -55,7 +68,10 @@ function Edit( { attributes, setAttributes, clientId, context } ) {
         };
     }, [ clientId ] );
 
+    console.log('📦 Item has inner blocks:', hasInnerBlocks);
+
     const addListItem = () => {
+        console.log('➕ Adding new list item after current');
         const rootClientId = getBlockRootClientId( clientId );
         const index = getBlockIndex( clientId );
         const newBlock = createBlock( 'enhanced-super-list/super-list-item' );
@@ -63,12 +79,16 @@ function Edit( { attributes, setAttributes, clientId, context } ) {
     };
 
     const removeListItem = () => {
+        console.log('🗑️ Attempting to remove list item');
         const rootClientId = getBlockRootClientId( clientId );
         const blocks = getBlocks( rootClientId );
         
         // Don't remove if it's the last item
         if ( blocks.length > 1 ) {
+            console.log('✅ Removing list item (not the last one)');
             removeBlock( clientId );
+        } else {
+            console.log('⚠️ Cannot remove last list item');
         }
     };
 
@@ -81,6 +101,8 @@ function Edit( { attributes, setAttributes, clientId, context } ) {
         ].filter( Boolean ).join( ' ' )
     } );
 
+    console.log('🎨 Item blockProps:', blockProps);
+
     const innerBlocksProps = useInnerBlocksProps(
         {
             className: 'wp-block-enhanced-super-list-super-list-item__content'
@@ -91,6 +113,9 @@ function Edit( { attributes, setAttributes, clientId, context } ) {
             renderAppender: hasInnerBlocks ? undefined : false,
         }
     );
+
+    console.log('📦 Item innerBlocksProps:', innerBlocksProps);
+    console.log('✅ Super List Item Edit component rendering');
 
     return (
         <>
@@ -164,52 +189,3 @@ function Edit( { attributes, setAttributes, clientId, context } ) {
         </>
     );
 }
-
-/**
- * Save component for the Super List Item block.
- */
-function Save( { attributes } ) {
-    const {
-        customMarker,
-        markerIcon,
-        markerColor,
-        completed
-    } = attributes;
-
-    const blockProps = useBlockProps.save( {
-        className: [
-            'wp-block-enhanced-super-list-super-list-item',
-            completed ? 'is-completed' : '',
-            customMarker ? 'has-custom-marker' : '',
-            markerIcon ? 'has-marker-icon' : ''
-        ].filter( Boolean ).join( ' ' )
-    } );
-
-    const innerBlocksProps = useInnerBlocksProps.save( {
-        className: 'wp-block-enhanced-super-list-super-list-item__content'
-    } );
-
-    return (
-        <li { ...blockProps }>
-            { ( customMarker || markerIcon ) && (
-                <span 
-                    className="wp-block-enhanced-super-list-super-list-item__marker"
-                    style={ { color: markerColor } }
-                >
-                    { markerIcon || customMarker }
-                </span>
-            ) }
-            <div { ...innerBlocksProps } />
-        </li>
-    );
-}
-
-/**
- * Export block configuration.
- */
-export { metadata };
-export const name = metadata.name;
-export const settings = {
-    edit: Edit,
-    save: Save,
-};

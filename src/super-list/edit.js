@@ -19,11 +19,6 @@ import {
 import { useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 
-/**
- * Internal dependencies
- */
-import metadata from './block.json';
-
 const ALLOWED_BLOCKS = [ 'enhanced-super-list/super-list-item' ];
 const TEMPLATE = [
     [ 'enhanced-super-list/super-list-item' ],
@@ -33,7 +28,11 @@ const TEMPLATE = [
 /**
  * Edit component for the Super List block.
  */
-function Edit( { attributes, setAttributes, clientId } ) {
+export default function Edit( { attributes, setAttributes, clientId } ) {
+    console.log('🔧 Super List Edit component started');
+    console.log('📊 Edit attributes:', attributes);
+    console.log('🆔 Client ID:', clientId);
+
     const {
         ordered,
         reversed,
@@ -44,6 +43,16 @@ function Edit( { attributes, setAttributes, clientId } ) {
         itemSpacing
     } = attributes;
 
+    console.log('🔧 Edit - extracted attributes:', {
+        ordered,
+        reversed, 
+        start,
+        type,
+        orientation,
+        gap,
+        itemSpacing
+    });
+
     const { insertBlock } = useDispatch( 'core/block-editor' );
     
     const { hasInnerBlocks } = useSelect( ( select ) => {
@@ -52,6 +61,8 @@ function Edit( { attributes, setAttributes, clientId } ) {
             hasInnerBlocks: getBlockCount( clientId ) > 0,
         };
     }, [ clientId ] );
+
+    console.log('📦 Has inner blocks:', hasInnerBlocks);
 
     const listTypeOptions = [
         { label: __( 'Disc', 'enhanced-super-list' ), value: 'disc' },
@@ -66,11 +77,13 @@ function Edit( { attributes, setAttributes, clientId } ) {
     ];
 
     const addListItem = () => {
+        console.log('➕ Adding new list item');
         const newBlock = createBlock( 'enhanced-super-list/super-list-item' );
         insertBlock( newBlock, undefined, clientId );
     };
 
     const TagName = ordered ? 'ol' : 'ul';
+    console.log('🏷️ TagName determined:', TagName);
 
     const blockProps = useBlockProps( {
         className: `is-orientation-${ orientation }`,
@@ -79,6 +92,8 @@ function Edit( { attributes, setAttributes, clientId } ) {
             '--item-spacing': itemSpacing ? `${ itemSpacing }px` : undefined,
         }
     } );
+
+    console.log('🎨 blockProps:', blockProps);
 
     const innerBlocksProps = useInnerBlocksProps(
         {
@@ -91,6 +106,10 @@ function Edit( { attributes, setAttributes, clientId } ) {
             orientation: orientation === 'horizontal' ? 'horizontal' : 'vertical',
         }
     );
+
+    console.log('📦 innerBlocksProps:', innerBlocksProps);
+
+    console.log('✅ Super List Edit component rendering');
 
     return (
         <>
@@ -182,53 +201,3 @@ function Edit( { attributes, setAttributes, clientId } ) {
         </>
     );
 }
-
-/**
- * Save component for the Super List block.
- */
-function Save( { attributes } ) {
-    const {
-        ordered,
-        reversed,
-        start,
-        type,
-        orientation,
-        gap,
-        itemSpacing
-    } = attributes;
-
-    const TagName = ordered ? 'ol' : 'ul';
-
-    const blockProps = useBlockProps.save( {
-        className: `is-orientation-${ orientation }`,
-        style: {
-            '--list-gap': gap ? `${ gap }px` : undefined,
-            '--item-spacing': itemSpacing ? `${ itemSpacing }px` : undefined,
-            listStyleType: type,
-        }
-    } );
-
-    const innerBlocksProps = useInnerBlocksProps.save( {
-        className: 'wp-block-enhanced-super-list-super-list__items'
-    } );
-
-    return (
-        <TagName
-            { ...blockProps }
-            reversed={ ordered && reversed ? true : undefined }
-            start={ ordered && start !== 1 ? start : undefined }
-        >
-            <div { ...innerBlocksProps } />
-        </TagName>
-    );
-}
-
-/**
- * Export block configuration.
- */
-export { metadata };
-export const name = metadata.name;
-export const settings = {
-    edit: Edit,
-    save: Save,
-};
